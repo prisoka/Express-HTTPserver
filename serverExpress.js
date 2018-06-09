@@ -23,6 +23,25 @@ app.get('/guests', function(req, res) {
   });
 });
 
+app.get('/guests/:id', function(req, res) {
+  fs.readFile(guestsPath, 'utf8', function(err, guestsJSON){
+    if (err) {
+      console.error(err.stack);
+      return res.sendStatus(500);
+    }
+
+    var id = Number.parseInt(req.params.id);
+    var guests = JSON.parse(guestsJSON);
+
+    if (id < 0 || id >= guests.length || Number.isNaN(id)) {
+      return res.sendStatus(404);
+    }
+
+    res.set('Content-Type', 'text/plain');
+    res.send(guests[id]);
+  });
+});
+
 app.use(function(req, res) {
   res.sendStatus(404);
 });
